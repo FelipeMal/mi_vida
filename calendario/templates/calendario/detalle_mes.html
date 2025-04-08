@@ -1,0 +1,400 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container romantic-container">
+    <div class="row">
+        <div class="col-12 mb-4">
+            <a href="{% url 'calendario' %}" class="btn btn-outline-primary mb-3">
+                <i class="fas fa-arrow-left"></i> Volver al Calendario
+            </a>
+            <h1 class="text-center romantic-title">{{ mes.nombre }}</h1>
+        </div>
+    </div>
+
+    {% if mes.imagen_portada %}
+    <div class="row mb-5 justify-content-center">
+        <div class="col-md-10">
+            <div class="cover-card card">
+                <div class="row g-0">
+                    <!-- Foto de portada -->
+                    <div class="col-md-6">
+                        <div class="cover-frame">
+                            <img src="{{ mes.imagen_portada.url }}" class="img-fluid rounded-start love-img" alt="{{ mes.nombre }}">
+                            <div class="heart-overlay"></div>
+                        </div>
+                    </div>
+                    <!-- Mensaje al lado de la foto -->
+                    {% if mes.mensaje %}
+                    <div class="col-md-6 d-flex align-items-center justify-content-center">
+                        <div class="card-body love-body mensaje-card">
+                            <h3 class="card-title text-center mb-4">Nuestro Mensaje</h3>
+                            <p class="card-text mensaje-texto">{{ mes.mensaje|linebreaks }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if mes.notas.all %}
+    <div class="row mb-5 justify-content-center">
+        <div class="col-12">
+            <h3 class="text-center mb-4 notas-title">Nuestras Notas Especiales ✨</h3>
+            <div class="row justify-content-center">
+                {% for nota in mes.notas.all %}
+                <div class="col-md-4 mb-4">
+                    <div class="card nota-card">
+                        <div class="card-header nota-header">
+                            <h5 class="card-title text-center mb-0">{{ nota.titulo }}</h5>
+                        </div>
+                        <div class="card-body nota-body collapse" id="nota{{ nota.id }}">
+                            <p class="nota-contenido">{{ nota.contenido|linebreaks }}</p>
+                        </div>
+                        <div class="card-footer nota-footer">
+                            <button class="btn btn-toggle w-100" data-bs-toggle="collapse" data-bs-target="#nota{{ nota.id }}" aria-expanded="false">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if mes.fotos.all %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="text-center mb-4 gallery-title">Galería de Recuerdos</h3>
+            <div class="row justify-content-center">
+                {% for foto in mes.fotos.all %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 love-card">
+                        <div class="frame-decor">
+                            <span class="corner top-left"></span>
+                            <span class="corner top-right"></span>
+                            <span class="corner bottom-left"></span>
+                            <span class="corner bottom-right"></span>
+                        </div>
+                        <img src="{{ foto.imagen.url }}" class="card-img-top love-img" alt="{{ foto.descripcion }}">
+                        {% if foto.descripcion %}
+                        <div class="card-body love-body description-body">
+                            <p class="card-text description-text">{{ foto.descripcion }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if mes.canciones.all %}
+    <div class="row mb-5 justify-content-center">
+        <div class="col-md-8">
+            <h3 class="text-center mb-4 song-title">Melodías de Nuestro Amor</h3>
+            <div class="song-list">
+                {% for cancion in mes.canciones.all %}
+                <div class="song-item card">
+                    <div class="card-body love-body">
+                        <h5>{{ cancion.titulo }}</h5>
+                        {% if cancion.archivo_mp3 %}
+                        <audio controls class="w-100 mb-2 love-audio">
+                            <source src="{{ cancion.archivo_mp3.url }}" type="audio/mpeg">
+                            Tu navegador no soporta el elemento de audio.
+                        </audio>
+                        {% endif %}
+                        {% if cancion.enlace_externo %}
+                        <a href="{{ cancion.enlace_externo }}" target="_blank" class="btn btn-primary btn-sm">
+                            Escuchar en línea
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .romantic-container {
+        background: rgba(255, 240, 245, 0.85);
+        border-radius: 20px;
+        box-shadow: 0 0 20px var(--shadow-color);
+    }
+
+    .romantic-title {
+        font-size: 3.5rem;
+        animation: fadeInDown 1.2s ease;
+    }
+
+    .gallery-title, .song-title, .notas-title {
+        font-size: 2.5rem;
+        font-family: 'Parisienne', cursive;
+        animation: fadeIn 1.5s ease;
+    }
+
+    .cover-card {
+        background: linear-gradient(135deg, rgba(255, 228, 225, 0.9), rgba(255, 245, 247, 0.9));
+        border-radius: 20px;
+        box-shadow: 0 15px 35px var(--shadow-color);
+        animation: fadeInUp 1s ease;
+        border: 2px solid rgba(255, 182, 193, 0.5);
+    }
+
+    .cover-frame {
+        position: relative;
+        padding: 15px;
+        background: linear-gradient(45deg, rgba(255, 182, 193, 0.5), rgba(255, 245, 247, 0.7));
+        border-radius: 20px 0 0 20px;
+        height: 100%;
+    }
+
+    .love-img {
+        height: 300px;
+        object-fit: cover;
+        border-radius: 15px 0 0 15px;
+        transition: all 0.5s ease;
+    }
+
+    .cover-card:hover .love-img, .love-card:hover .love-img {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+    }
+
+    .heart-overlay {
+        position: absolute;
+        top: 25px;
+        right: 25px;
+        width: 50px;
+        height: 50px;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(255,105,180,0.7)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+        background-size: cover;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+    .cover-card:hover .heart-overlay {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+
+    .mensaje-card {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+
+    .love-body {
+        padding: 25px;
+        height: 100%;
+    }
+
+    .mensaje-texto {
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.5rem;
+        line-height: 2;
+        color: var(--primary-color);
+        text-align: center;
+        position: relative;
+        margin: 0;
+    }
+
+    .mensaje-texto::before,
+    .mensaje-texto::after {
+        content: '❥';
+        font-size: 2rem;
+        color: var(--secondary-color);
+        opacity: 0.3;
+        position: absolute;
+    }
+
+    .mensaje-texto::before { top: 10px; left: 20px; }
+    .mensaje-texto::after { bottom: 10px; right: 20px; }
+
+    .frame-decor {
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        width: calc(100% + 10px);
+        height: calc(100% + 10px);
+        pointer-events: none;
+        z-index: 3;
+    }
+
+    .corner {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="rgba(255,105,180,0.8)" stroke-width="2"><path d="M0 10 A10 10 0 0 1 10 0"/></svg>');
+        background-size: cover;
+    }
+
+    .top-left { top: 0; left: 0; }
+    .top-right { top: 0; right: 0; transform: rotate(90deg); }
+    .bottom-left { bottom: 0; left: 0; transform: rotate(-90deg); }
+    .bottom-right { bottom: 0; right: 0; transform: rotate(180deg); }
+
+    .description-body {
+        background: linear-gradient(45deg, rgba(255, 182, 193, 0.7), rgba(255, 228, 225, 0.9));
+        border-top: 2px solid rgba(255, 105, 180, 0.3);
+        padding: 15px;
+        position: relative;
+    }
+
+    .description-text {
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.2rem;
+        color: #d81b60;
+        text-align: center;
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .description-body::before,
+    .description-body::after {
+        content: '❥';
+        font-size: 1.5rem;
+        color: #ff69b4;
+        opacity: 0.3;
+        position: absolute;
+    }
+
+    .description-body::before { top: 10px; left: 10px; }
+    .description-body::after { bottom: 10px; right: 10px; }
+
+    /* Estilo para las notas como tarjetas individuales */
+    .nota-card {
+        background: linear-gradient(135deg, rgba(255, 228, 225, 0.9), rgba(255, 245, 247, 0.9));
+        border-radius: 15px;
+        box-shadow: 0 10px 20px var(--shadow-color);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .nota-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px var(--shadow-color);
+    }
+
+    .nota-header {
+        background: linear-gradient(45deg, rgba(255, 182, 193, 0.5), rgba(255, 228, 225, 0.7));
+        border: none;
+        padding: 15px;
+        cursor: pointer;
+    }
+
+    .nota-header h5 {
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        text-shadow: none;
+        background: none;
+        -webkit-text-fill-color: initial;
+    }
+
+    .nota-body {
+        background: rgba(255, 245, 247, 0.7);
+        padding: 20px;
+    }
+
+    .nota-contenido {
+        font-family: 'Dancing Script', cursive;
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        text-align: center;
+        line-height: 1.8;
+        margin: 0;
+    }
+
+    .nota-contenido::before,
+    .nota-contenido::after {
+        content: '❥';
+        font-size: 1.5rem;
+        color: var(--secondary-color);
+        opacity: 0.3;
+        display: block;
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    .nota-footer {
+        background: transparent;
+        border: none;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .btn-toggle {
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 5px 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-toggle:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px var(--shadow-color);
+    }
+
+    .btn-toggle i {
+        transition: transform 0.3s ease;
+    }
+
+    .btn-toggle[aria-expanded="true"] i {
+        transform: rotate(180deg);
+    }
+
+    .song-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .song-item {
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.8s ease backwards;
+    }
+
+    .song-item:hover {
+        transform: translateY(-5px);
+    }
+
+    .love-audio {
+        border-radius: 30px;
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        padding: 5px;
+        animation: audioGlow 3s infinite;
+    }
+
+    @keyframes audioGlow {
+        0%, 100% { box-shadow: 0 0 15px var(--shadow-color); }
+        50% { box-shadow: 0 0 25px var(--shadow-color); }
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInUp {
+        from { opacity: 0; transform: translateY(50px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container romantic-container">
+    <h1 class="text-center mb-5 romantic-title">Nuestro Viaje de Amor Eterno</h1>
+    <div class="row">
+        {% for mes in meses %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 love-card">
+                <div class="frame-decor">
+                    <span class="corner top-left"></span>
+                    <span class="corner top-right"></span>
+                    <span class="corner bottom-left"></span>
+                    <span class="corner bottom-right"></span>
+                </div>
+                {% if mes.imagen_portada %}
+                <img src="{{ mes.imagen_portada.url }}" class="card-img-top love-img" alt="{{ mes.nombre }}">
+                <div class="heart-overlay"></div>
+                {% else %}
+                <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <h3 class="month-title">{{ mes.nombre }}</h3>
+                </div>
+                {% endif %}
+                <div class="card-body text-center love-body">
+                    <h5 class="card-title">{{ mes.nombre }}</h5>
+                    {% if mes.mensaje %}
+                    <a href="{% url 'detalle_mes' mes.nombre %}" class="btn btn-primary">Descubre Nuestro Momento</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .romantic-container {
+        background: rgba(255, 240, 245, 0.85);
+        border-radius: 20px;
+        box-shadow: 0 0 20px var(--shadow-color);
+    }
+
+    .romantic-title {
+        font-size: 3.8rem;
+        animation: fadeInDown 1.2s ease;
+    }
+
+    .love-card {
+        position: relative;
+    }
+
+    .frame-decor {
+        position: absolute;
+        top: -5px;
+        left: -5px;
+        width: calc(100% + 10px);
+        height: calc(100% + 10px);
+        pointer-events: none;
+        z-index: 3;
+    }
+
+    .corner {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="rgba(255,105,180,0.8)" stroke-width="2"><path d="M0 10 A10 10 0 0 1 10 0"/></svg>');
+        background-size: cover;
+    }
+
+    .top-left { top: 0; left: 0; }
+    .top-right { top: 0; right: 0; transform: rotate(90deg); }
+    .bottom-left { bottom: 0; left: 0; transform: rotate(-90deg); }
+    .bottom-right { bottom: 0; right: 0; transform: rotate(180deg); }
+
+    .love-img {
+        height: 250px;
+        object-fit: cover;
+        transition: all 0.5s ease;
+        filter: brightness(0.9);
+    }
+
+    .love-card:hover .love-img {
+        transform: scale(1.15);
+        filter: brightness(1.1);
+    }
+
+    .heart-overlay {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="rgba(255,105,180,0.7)"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>');
+        background-size: cover;
+        opacity: 0.7;
+        transition: all 0.3s ease;
+    }
+
+    .love-card:hover .heart-overlay {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+
+    .love-body {
+        padding: 20px;
+    }
+
+    .month-title {
+        font-family: 'Dancing Script', cursive;
+        color: #f06292;
+        font-size: 2rem;
+        text-shadow: 1px 1px 2px rgba(255, 182, 193, 0.5);
+    }
+
+    .bg-gradient {
+        background: linear-gradient(45deg, var(--light-bg), #ffe4e1);
+    }
+</style>
+{% endblock %}
